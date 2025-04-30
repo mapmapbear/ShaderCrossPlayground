@@ -3,41 +3,27 @@
 
 using namespace std;
 
-//the library's namespace
+// the library's namespace
 using namespace shadert;
 
-int main(){
-	
-	//create an instance
-	ShaderTranspiler s;
-	
-	//Create a CompileTask with the path to your shader and its stage.
-	//The path is required because this library supports the OpenGL #include extension
-	MemoryCompileTask task{ R"(#version 430
-			layout(early_fragment_tests) in;
-			layout(location = 0) out vec4 color;
-			void main(){
-				color = vec4(1,0,0,1);
-			}
-		)","",ShaderStage::Fragment};
-	
-	//configure the compile with an Options object
-	Options opt;
-	opt.mobile = true; //used for OpenGL ES or Metal iOS
-	opt.version = 330;   //stores the major and minor version, for Vulkan 1.5 use 15
-	
-	try{
-		//call CompileTo and pass the CompileTask and the Options
-		CompileResult result = s.CompileTo(task, TargetAPI::OpenGL, opt);
-		
-		//the shader data is stored in the sourceData or binaryData fields
-		cout << result.data.sourceData << endl;
-	}
-	catch(exception& e){
-		//library will throw on errors
-		cerr << e.what() << endl;
-		return 1;
-	}
-	
-	return 0;
+int main() {
+
+  // create an instance
+  ShaderTranspiler s;
+
+  CompileTask task{"_Shaders/testLighting.fs.spirv", ShaderStage::Fragment};
+
+  Options opt;
+
+  try {
+    // call CompileTo and pass the CompileTask and the Options
+    CompileResult result = s.Compile(task, TargetAPI::Metal, opt);
+    const string shaderCode = result.data.sourceData;
+    std::cout << result.data.sourceData << std::endl;
+  } catch (exception &e) {
+    std::cout << e.what() << std::endl;
+    return 1;
+  }
+
+  return 0;
 }
