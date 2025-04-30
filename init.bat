@@ -1,0 +1,1 @@
+xmake watch -d shader -c "xmake build ShaderCompiler"
